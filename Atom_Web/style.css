@@ -1,0 +1,16 @@
+body{
+  text-align: center;
+  background-color: #2E4053
+}
+
+.doorStatus{
+  margin-top: 40%;
+  color: white;
+  font-family: Verdana;
+}
+
+.doorButton{
+  font: 1.5em;
+  font-family: Verdana;
+  padding: 10px;
+}
