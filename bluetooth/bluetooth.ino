@@ -1,7 +1,7 @@
 #include <SoftwareSerial.h>
+#include "outgoingCommands.h"
 
 #define LED_PIN 5
-
 #define txPin 11
 #define rxPin 10
 
@@ -24,23 +24,24 @@ void setup() {
 }
 
 void loop() {
-     processData2();
+    processData2();
 }
 
 # pragma mark - helper methods
 
 void processData2() {
-      if (adc.available()) {
+    if (adc.available()) {
         char data = adc.read();
         Serial.println(data);
-        if(data=='a'){
-          if(isLightOn == 0){
-            digitalWrite(LED_PIN,LOW);
-          }
-          else{
-            digitalWrite(LED_PIN,HIGH);
-          }
-          isLightOn = !isLightOn;
+        if (data == 'a') {
+            isLightOn = !isLightOn;
+            if (isLightOn == 0) {
+                adc.print(offCommand);
+                digitalWrite(LED_PIN, LOW);
+            } else {
+                adc.print(onCommand);
+                digitalWrite(LED_PIN, HIGH);
+            }
         }
-      }
+    }
 }
