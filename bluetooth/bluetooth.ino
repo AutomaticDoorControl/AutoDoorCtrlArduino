@@ -6,7 +6,6 @@
 #define rxPin 10
 
 SoftwareSerial adc(rxPin, txPin);
-int isLightOn = 0;
 
 
 # pragma mark - function prototypes
@@ -34,14 +33,12 @@ void processData2() {
         char data = adc.read();
         Serial.println(data);
         if (data == 'a') {
-            isLightOn = !isLightOn;
-            if (isLightOn == 0) {
-                adc.print(offCommand);
-                digitalWrite(LED_PIN, LOW);
-            } else {
-                adc.print(onCommand);
-                digitalWrite(LED_PIN, HIGH);
-            }
+            adc.print(onCommand);
+            digitalWrite(LED_PIN, HIGH);
+            delay(2000);
+            digitalWrite(LED_PIN, LOW);
+            delay(20000);
+            adc.print(offCommand);
         }
     }
 }
