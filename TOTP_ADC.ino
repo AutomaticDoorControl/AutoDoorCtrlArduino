@@ -2,6 +2,7 @@
 #include <sha1.h>     //sha1.h and TOTP.h allow for TOTP authentification
 #include <TOTP.h>
 #include <DS3232RTC.h>  //https://github.com/JChristensen/DS3232RTC
+#include <SoftwareSerial.h>
 
 //Key for -ADC-
 uint8_t hmacKey[] = {0xb8, 0x52, 0xaf, 0xc9, 0x91, 0x82, 0x5b, 0xf9, 0x72, 0x8f, 0x99, 0xd1, 0x31, 0x65, 0xc1, 0xe5, 0xde, 0xe8, 0xd2, 0xea, 0x71, 0xa7, 0x63, 0x39, 0x38, 0x24, 0xe1, 0xe2, 0x94, 0xd2, 0x29, 0x3f};
@@ -19,13 +20,19 @@ uint8_t hmacKey[] = {0xb8, 0x52, 0xaf, 0xc9, 0x91, 0x82, 0x5b, 0xf9, 0x72, 0x8f,
 TOTP totp = TOTP(hmacKey, 32);
 String temp;
 String code;
-#define DOOR_PIN 13
+#define DOOR_PIN 5
+#define txPin 11
+#define rxPin 10
+
+SoftwareSerial adc(rxPin, txPin);
 
 void setup() {
-
-    
     pinMode(DOOR_PIN, OUTPUT);
+    pinMode(rxPin, INPUT);
+    pinMode(txPin, OUTPUT);
     Serial.begin(9600);
+    adc.begin(9600);
+    
     //If time gets messed up you need to reset it (takes about 7 seconds to upload)
 //  setTime(13, 45, 0, 1, 11, 2019);
 //  RTC.set(now());
@@ -42,9 +49,10 @@ void setup() {
 
 void loop() {
   //Loops when recieves an input
-  if(Serial.available() > 0){
+  if(adc.available()){
     code = "";
-    temp = Serial.readString();
+    temp = adc.readString();
+//    adc.print(temp);
     for(int i=0; i < 6; i++){
         code += temp[i];
     }
@@ -68,13 +76,16 @@ void loop() {
     String correct(newCode);
     if(code.equals(correct)) {
       Serial.println("Door Open");
+      adc.println("OPEN");
       digitalWrite(DOOR_PIN, HIGH);
       delay(2000);
       digitalWrite(DOOR_PIN, LOW);
       Serial.println("Door is now closing");
+      adc.println("CLOSED");
     }  
     else{
       Serial.println("Invalid token");
+      adc.println("INVALID TOKEN");
       digitalWrite(DOOR_PIN, LOW);
     }
     Serial.println(code);
