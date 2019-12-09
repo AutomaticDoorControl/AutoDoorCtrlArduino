@@ -18,16 +18,23 @@ uint8_t hmacKey[] = {0xb8, 0x52, 0xaf, 0xc9, 0x91, 0x82, 0x5b, 0xf9, 0x72, 0x8f,
 
 //Set up variables
 TOTP totp = TOTP(hmacKey, 32);
+TOTP totp_past = TOTP(hmacKey, 32);
+TOTP totp_future = TOTP(hmacKey, 32);
 String temp;
 String code;
 #define DOOR_PIN 5
 #define txPin 11
 #define rxPin 10
+#define timeError 20
 
 SoftwareSerial adc(rxPin, txPin);
 
 void setup() {
+    //Supply 
+    pinMode(7, OUTPUT);
+    digitalWrite(7, HIGH);
     pinMode(DOOR_PIN, OUTPUT);
+    digitalWrite(DOOR_PIN, HIGH);
     pinMode(rxPin, INPUT);
     pinMode(txPin, OUTPUT);
     Serial.begin(9600);
@@ -58,35 +65,29 @@ void loop() {
     }
     //Time since epoch
     time_t current_time =  RTC.get();
+    time_t past_time = current_time - timeError;
+    time_t future_time = current_time + timeError;
     //Print info to make sure GMT timezone is correct
-    Serial.println(current_time);
-    Serial.print(hour());
-    printDigits(minute());
-    printDigits(second());
-    Serial.print(' ');
-    Serial.print(day());
-    Serial.print(' ');
-    Serial.print(month());
-    Serial.print(' ');
-    Serial.print(year());
-    Serial.println();
-
+    printGMT();
     //Get the code
     char* newCode = totp.getCode(current_time);
+    char* past = totp_past.getCode(past_time);
+    char* future = totp_future.getCode(future_time);
     String correct(newCode);
-    if(code.equals(correct)) {
+    String past_correct(past);
+    String future_correct(future);
+    if(code.equals(correct) || code.equals(past_correct) || code.equals(future_correct)) {
       Serial.println("Door Open");
-      adc.println("OPEN");
-      digitalWrite(DOOR_PIN, HIGH);
-      delay(2000);
+//      adc.println("OPEN");
       digitalWrite(DOOR_PIN, LOW);
+      delay(2000);
+      digitalWrite(DOOR_PIN, HIGH);
       Serial.println("Door is now closing");
       adc.println("CLOSED");
     }  
     else{
       Serial.println("Invalid token");
       adc.println("INVALID TOKEN");
-      digitalWrite(DOOR_PIN, LOW);
     }
     Serial.println(code);
     Serial.println(correct);
@@ -101,4 +102,17 @@ void printDigits(int digits)
     if(digits < 10)
         Serial.print('0');
     Serial.print(digits);
+}
+
+void printGMT(){
+    Serial.print(hour());
+    printDigits(minute());
+    printDigits(second());
+    Serial.print(' ');
+    Serial.print(day());
+    Serial.print(' ');
+    Serial.print(month());
+    Serial.print(' ');
+    Serial.print(year());
+    Serial.println();
 }
