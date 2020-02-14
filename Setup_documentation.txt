@@ -1,7 +1,0 @@
-How to setup arduino:
-
-1. In order to see how to wire up the arduino: look at ADC_circuit.png or look at
-2. RTC and HC-08 documentation to see would those are specifically setup
-3. First set up the time to the RTC by uploading RTC.ino to the arduino and setting the current time in the code
-4. Next you might want to rename the HC-08 so you can add it to the API. The code rename.ino can help with renaming the HC-08 module
-5. Last step is to upload the TOTP_ADC code and select the correct key for the specific door
