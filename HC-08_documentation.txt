@@ -1,7 +1,0 @@
-How to Wire HC-08: (Also shown in ADC_circuit)
-
-1. VCC goes to 5V power supply on arduino
-2. GND goes to ground power on arudino
-3. TXD goes to Digital pin 10 on arduino
-4. RXD goes to Digital pin 11 on arduino
-5. The other two (State and FN) don't touch

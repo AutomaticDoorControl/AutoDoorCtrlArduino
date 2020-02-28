@@ -1,7 +1,0 @@
-How to Wire the RTC: (also shown in ADC_Circuit)
-
-1. GND goes to the ground on the arduino
-2. VCC goes to the 3.5V power supply (5V also works but recommended use is 3.5V)
-3. SDA goes to Analogin Pin A4
-4. SCL goes to Analogin Pin A5
-5. 32K and SQW don't touch
