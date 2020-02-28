@@ -25,4 +25,9 @@ The Arduino portion of the ADC project is tasked with recieving a 6 digit TOTP o
 1. Wire the arduino up correctly
 3. First set up the time to the RTC by uploading RTC.ino to the arduino and setting the current time in the code
 4. Next you might want to rename the HC-08 so you can add it to the API. The code rename.ino can help with renaming the HC-08 module
-5. Last step is to upload the TOTP_ADC code and select the correct key for the specific door (note that we use https://github.com/lucadentella/TOTP-Arduino/tree/master/ for TOTP generation and https://github.com/JChristensen/DS3232RTC for the RTC)
+5. Last step is to upload the TOTP_ADC code and select the correct key for the specific door
+
+## Dependencies
+- https://github.com/lucadentella/TOTP-Arduino/tree/master/ for TOTP generation
+- https://github.com/JChristensen/DS3232RTC for the RTC
+- https://github.com/PaulStoffregen/Time for Arduino time
