@@ -16,6 +16,10 @@ The Arduino portion of the ADC project is tasked with recieving a 6 digit TOTP o
 4. SCL goes to Analogin Pin A5
 5. 32K and SQW don't touch
 
+## How to set the current time using the RTC and Linux
+1. Upload the RTC.ino sketch to the Arduino
+2. While running and connected, run `date +T%s > /dev/ttyUSB0` to send the current UTC time to the Arduino
+
 ## How to setup Arduino:
 
 1. Wire the arduino up correctly
